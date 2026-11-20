@@ -10,6 +10,6 @@
 </section>
 <section class="features">
     <article><h2>Modern PHP</h2><p>Strict types, small focused classes, and a lightweight front controller.</p></article>
-    <article><h2>Supabase Postgres</h2><p>PDO prepared statements, TLS, and SQL schema you can run in Supabase SQL Editor.</p></article>
+    <article><h2>Supabase Postgres</h2><p>PDO prepared statements, TLS, and SQL schema for Supabase SQL Editor.</p></article>
     <article><h2>Secure basics</h2><p>CSRF protection, escaped output, secure sessions, and password hashing.</p></article>
 </section>

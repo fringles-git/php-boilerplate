@@ -7,12 +7,12 @@ use App\Database;
 use App\UserRepository;
 
 require dirname(__DIR__) . '/config/app.php';
-require dirname(__DIR__) . '/src/Database.php';
 require dirname(__DIR__) . '/src/Support.php';
+require dirname(__DIR__) . '/src/Database.php';
 require dirname(__DIR__) . '/src/UserRepository.php';
 require dirname(__DIR__) . '/src/Auth.php';
 
-if (PHP_VERSION_ID < 80500) {
+if (PHP_VERSION_ID < 80512) {
     http_response_code(500);
     exit('PHP 8.5.12 or newer is required.');
 }
@@ -48,12 +48,10 @@ try {
         render('home', compact('user'));
         exit;
     }
-
     if ($path === '/register' && $method === 'GET') {
         render('register', compact('user', 'errors', 'old'));
         exit;
     }
-
     if ($path === '/register' && $method === 'POST') {
         $old = [
             'name' => trim((string) ($_POST['name'] ?? '')),
@@ -90,18 +88,17 @@ try {
         render('register', compact('user', 'errors', 'old'));
         exit;
     }
-
     if ($path === '/login' && $method === 'GET') {
         render('login', compact('user', 'errors', 'old'));
         exit;
     }
-
     if ($path === '/login' && $method === 'POST') {
         $old['username'] = strtolower(trim((string) ($_POST['username'] ?? '')));
         $candidate = $users->findByLogin($old['username']);
         if ($candidate !== null && password_verify((string) ($_POST['password'] ?? ''), $candidate['password_hash'])) {
+            $password = (string) $_POST['password'];
             if (password_needs_rehash($candidate['password_hash'], PASSWORD_DEFAULT)) {
-                $users->updatePassword((int) $candidate['id'], password_hash((string) $_POST['password'], PASSWORD_DEFAULT));
+                $users->updatePassword((int) $candidate['id'], password_hash($password, PASSWORD_DEFAULT));
             }
             $auth->login($candidate);
             flash('You are now logged in.');
@@ -111,19 +108,16 @@ try {
         render('login', compact('user', 'errors', 'old'));
         exit;
     }
-
     if ($path === '/logout' && $method === 'POST') {
         $auth->logout();
         flash('You have been logged out.');
         redirect('/');
     }
-
     if ($path === '/profile' && $method === 'GET') {
         require_login($user);
         render('profile', compact('user', 'errors'));
         exit;
     }
-
     if ($path === '/profile' && $method === 'POST') {
         require_login($user);
         $name = trim((string) ($_POST['name'] ?? ''));
@@ -152,7 +146,6 @@ try {
         render('profile', compact('user', 'errors'));
         exit;
     }
-
     if ($path === '/profile/delete' && $method === 'POST') {
         require_login($user);
         $users->delete((int) $user['id']);

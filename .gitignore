@@ -1,6 +1,7 @@
 # Runtime files
 .env
 *.log
+node_modules/
 
 # OS/editor files
 .DS_Store
