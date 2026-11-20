@@ -1,11 +1,3 @@
-module.exports = {
-    content: ['./templates/**/*.php', './public/**/*.php'],
-    theme: {
-        extend: {
-            colors: {
-                brand: { 600: '#2558a6', 700: '#1d4788' },
-            },
-        },
-    },
-    plugins: [],
-};
+// Tailwind CSS 4 is configured in resources/css/input.css via @import and @theme.
+// This file intentionally has no v3 theme/content configuration.
+export default {};

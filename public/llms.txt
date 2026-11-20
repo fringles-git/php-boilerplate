@@ -1,0 +1,23 @@
+# PHP Boilerplate
+
+A modular PHP 8.5.12 starter for server-rendered applications.
+
+- Runtime: PHP 8.5.12
+- Database: optional PostgreSQL or Supabase via PDO
+- Authentication: optional, disabled by default
+- Styling: Tailwind CSS 4
+- PWA: manifest and public-only service-worker caching
+- SEO: canonical, Open Graph, Twitter, sitemap, and robots metadata
+
+## Public routes
+
+- `/` — application home
+- `/manifest.webmanifest` — PWA manifest
+- `/service-worker.js` — service worker
+- `/robots.txt` — crawler instructions
+- `/sitemap.xml` — public sitemap
+- `/.well-known/agent.json` — agent discovery metadata
+
+## Source
+
+The source and setup instructions are maintained in `README.md`.

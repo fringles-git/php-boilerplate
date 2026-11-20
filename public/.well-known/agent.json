@@ -1,0 +1,20 @@
+{
+  "name": "PHP Boilerplate",
+  "description": "A modular PHP 8.5.12 starter with optional PostgreSQL/Supabase authentication.",
+  "homepage": "/",
+  "capabilities": [
+    "server-rendered-pages",
+    "optional-user-authentication",
+    "optional-postgresql",
+    "tailwind-css",
+    "pwa",
+    "seo"
+  ],
+  "public_routes": [
+    "/",
+    "/manifest.webmanifest",
+    "/robots.txt",
+    "/sitemap.xml",
+    "/llms.txt"
+  ]
+}

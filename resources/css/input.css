@@ -7,16 +7,24 @@
 }
 
 @layer base {
+  :root { color-scheme: light; }
   body { @apply m-0 bg-slate-50 font-sans text-slate-900 antialiased; }
-  a { @apply text-brand-600; }
+  a { @apply text-brand-600 underline-offset-4 hover:underline; }
+  button, input { font: inherit; }
 }
 
 @layer components {
   .shell { @apply mx-auto max-w-5xl p-6; }
-  .card { @apply mx-auto my-8 max-w-lg rounded-xl border border-slate-200 bg-white p-6; }
+  .brand { @apply text-lg font-extrabold no-underline text-slate-900; }
+  .card { @apply mx-auto my-8 max-w-lg rounded-xl border border-slate-200 bg-white p-6 shadow-sm; }
+  .feature-grid { @apply grid gap-4 md:grid-cols-3; }
+  .feature-grid article { @apply rounded-lg border border-slate-200 p-4; }
   .button { @apply inline-block rounded-md bg-brand-600 px-4 py-3 text-white no-underline hover:bg-brand-700; }
   .field { @apply mt-1 block w-full rounded-md border border-slate-300 px-3 py-3; }
   .form-label { @apply my-4 block font-semibold; }
   .alert { @apply my-4 rounded-md bg-emerald-50 p-4; }
   .alert-error { @apply bg-red-50 text-red-800; }
+  .errors { @apply my-4 rounded-md bg-red-50 px-4 py-3 text-red-800; }
+  .danger { @apply mt-4 rounded-md bg-red-700 px-4 py-2 text-white; }
+  .eyebrow { @apply font-bold uppercase tracking-widest text-brand-600; }
 }
