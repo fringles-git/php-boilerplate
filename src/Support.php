@@ -22,6 +22,19 @@ function csrf_validate(mixed $token): bool
         && hash_equals($_SESSION['csrf_token'], $token);
 }
 
+function verify_csrf(): void
+{
+    if (!csrf_validate($_POST['csrf_token'] ?? null)) {
+        http_response_code(403);
+        render('error', [
+            'errors' => ['Your form session expired. Please try again.'],
+            'authEnabled' => config_flag('AUTH_ENABLED', false),
+            'user' => null,
+        ]);
+        exit;
+    }
+}
+
 function flash(string $message, string $type = 'success'): void
 {
     $_SESSION['flash'][] = ['text' => $message, 'type' => $type];
@@ -36,7 +49,8 @@ function flash_all(): array
 
 function url(string $path = '/'): string
 {
-    return rtrim(config('APP_URL'), '/') . '/' . ltrim($path, '/');
+    $base = rtrim(config('APP_URL', 'http://127.0.0.1:8000'), '/');
+    return $base . '/' . ltrim($path, '/');
 }
 
 function redirect(string $path): never
@@ -55,6 +69,8 @@ function render(string $template, array $data = []): void
         throw new RuntimeException('Template not found.');
     }
     $view = $templatePath;
+    $authEnabled = $authEnabled ?? config_flag('AUTH_ENABLED', false);
+    $user = $user ?? null;
     require dirname(__DIR__) . '/templates/layout.php';
 }
 

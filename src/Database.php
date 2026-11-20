@@ -17,6 +17,10 @@ final class Database
             return self::$pdo;
         }
 
+        $driver = strtolower(trim(\config('DB_DRIVER', 'none')));
+        if (!in_array($driver, ['postgres', 'supabase'], true)) {
+            throw new PDOException('Database access is disabled or DB_DRIVER is invalid.');
+        }
         foreach (['DB_HOST', 'DB_NAME', 'DB_USER', 'DB_PASSWORD'] as $required) {
             if (\config($required) === '') {
                 throw new PDOException("Missing required environment value: {$required}");
