@@ -1,67 +1,55 @@
 # PHP Boilerplate
 
-A secure, reusable PHP starter using **PHP 8.5.12** and **Supabase PostgreSQL**. No Composer, framework, or Docker required. Tailwind CSS is included for styling; Node/npm is only needed when rebuilding the CSS.
+A reusable PHP 8.5.12 starter for Supabase PostgreSQL with Tailwind CSS, SEO metadata, PWA assets, no Composer, and no Docker.
 
 ## Requirements
 
 - PHP 8.5.12 or newer
 - PHP `pdo_pgsql` extension
-- Supabase project with database access
-- Node.js/npm only for Tailwind CSS builds
-- Apache 2.4 with `mod_rewrite`, or PHP's built-in development server
+- A Supabase PostgreSQL database
+- Node.js/npm only when rebuilding Tailwind CSS
 
 ## Quick start
 
-1. Copy `.env.example` to `.env` and set your Supabase PostgreSQL connection details from **Supabase Dashboard → Connect**.
-2. In Supabase SQL Editor, run `database/schema.sql`.
-3. Install CSS tooling and build the stylesheet (optional if you keep/edit the committed CSS):
-
-   ```sh
-   npm install
-   npm run build:css
-   ```
-
-4. Start the PHP development server from the repository root:
-
-   ```sh
-   php -S 127.0.0.1:8000 -t public
-   ```
-
-5. Open `http://127.0.0.1:8000`.
-
-The web server document root must be `public/`; do not expose `.env`, `src/`, `config/`, or `database/` to the web.
-
-## Supabase connection
-
-The app connects to Supabase PostgreSQL using PDO (`pdo_pgsql`) and TLS (`DB_SSLMODE=require`). Copy the exact host, port, database, and username shown by your Supabase project's **Connect** panel. A pooled connection is usually a good fit for PHP's short-lived web requests; use the pooler address and credentials provided by Supabase. Do not guess its region or username format.
-
-This starter uses a server-side database connection and a local PHP session for its example authentication. Never put database credentials, a Supabase secret/service-role key, or any other privileged credential in browser JavaScript. Keep database access restricted and review Supabase network access and RLS policies for your deployment. Direct database connections made with a privileged server credential bypass client-side Supabase Auth/RLS assumptions; never trust request data or expose this connection to users.
-
-## Tailwind CSS
-
-Tailwind v3 is pinned in `package.json`; configuration is in `tailwind.config.js`, and styles live in `resources/css/input.css`. The generated stylesheet is `public/assets/app.css`.
+1. Copy `.env.example` to `.env` and enter the connection details shown in Supabase **Connect**.
+2. Run `database/schema.sql` in Supabase SQL Editor.
+3. Start the app:
 
 ```sh
-npm install
-npm run build:css
-npm run watch:css
+php -S 127.0.0.1:8000 -t public
 ```
 
-PHP does not need Node/npm at runtime. Composer and Docker are not used.
+4. Open `http://127.0.0.1:8000`.
 
-## Included
+## SEO
 
-- Front controller and small URL dispatcher
-- Secure session cookie settings, session ID rotation, CSRF tokens, and output escaping
-- PDO PostgreSQL prepared queries
-- Registration, login, profile update, logout, and account deletion examples
-- `password_hash()` / `password_verify()` and password rehashing
-- Supabase SQL schema, Tailwind CSS config, and dependency-free PHP smoke checks
+- Canonical, Open Graph, and Twitter metadata are included in `templates/layout.php`.
+- `public/robots.txt` permits public crawling and declares the sitemap URL.
+- `public/sitemap.xml` contains the initial home route.
+- Set `APP_URL` to the production origin and update the sitemap for every public route.
+- Add real page titles and descriptions from route-specific metadata when expanding the app.
+
+## PWA
+
+- `public/manifest.webmanifest` defines installation metadata and icons.
+- `public/service-worker.js` provides a production-safe offline fallback and cache cleanup.
+- `public/icon.svg` provides a scalable app icon.
+- Update the manifest name, theme colors, categories, and icon files for your project.
+- Service workers require HTTPS, except for `localhost` development.
+
+## Supabase
+
+Use the exact pooled or direct PostgreSQL connection details shown by Supabase. Use `DB_SSLMODE=require` unless a stricter TLS/CA setup is configured.
+
+Never expose Supabase service-role credentials or database passwords to browser JavaScript.
 
 ## Commands
 
 ```sh
 php tests/smoke.php
+npm install
+npm run build:css
+npm run watch:css
 php -S 127.0.0.1:8000 -t public
 ```
 

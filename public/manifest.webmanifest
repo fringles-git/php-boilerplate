@@ -1,0 +1,21 @@
+{
+  "name": "PHP Boilerplate",
+  "short_name": "PHP Boilerplate",
+  "description": "A reusable PHP 8.5 and Supabase PostgreSQL starter.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f8fafc",
+  "theme_color": "#2558a6",
+  "categories": ["developer tools", "productivity"],
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
