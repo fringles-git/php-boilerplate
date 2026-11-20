@@ -1,57 +1,79 @@
-# PHP Boilerplate
+# PHP 8.5.12 boilerplate
 
-A reusable PHP 8.5.12 starter for Supabase PostgreSQL with Tailwind CSS, SEO metadata, PWA assets, no Composer, and no Docker.
+A dependency-light starter for server-rendered PHP applications, with optional authentication and Supabase/PostgreSQL support.
 
 ## Requirements
 
 - PHP 8.5.12 or newer
-- PHP `pdo_pgsql` extension
-- A Supabase PostgreSQL database
+- PHP `pdo_pgsql` for PostgreSQL/Supabase (optional)
 - Node.js/npm only when rebuilding Tailwind CSS
+- Apache 2.4 with `mod_rewrite`, or PHP's built-in server
 
 ## Quick start
 
-1. Copy `.env.example` to `.env` and enter the connection details shown in Supabase **Connect**.
-2. Run `database/schema.sql` in Supabase SQL Editor.
-3. Start the app:
-
 ```sh
+cp .env.example .env
+php tests/smoke.php
 php -S 127.0.0.1:8000 -t public
 ```
 
-4. Open `http://127.0.0.1:8000`.
+Open `http://127.0.0.1:8000`.
 
-## SEO
+Authentication and database access are disabled by default:
 
-- Canonical, Open Graph, and Twitter metadata are included in `templates/layout.php`.
-- `public/robots.txt` permits public crawling and declares the sitemap URL.
-- `public/sitemap.xml` contains the initial home route.
-- Set `APP_URL` to the production origin and update the sitemap for every public route.
-- Add real page titles and descriptions from route-specific metadata when expanding the app.
+```dotenv
+AUTH_ENABLED=false
+DB_DRIVER=none
+```
 
-## PWA
+Set `AUTH_ENABLED=true` to enable the included account features. Choose `DB_DRIVER=postgres` or `DB_DRIVER=supabase` and configure the corresponding PostgreSQL credentials.
 
-- `public/manifest.webmanifest` defines installation metadata and icons.
-- `public/service-worker.js` provides a production-safe offline fallback and cache cleanup.
-- `public/icon.svg` provides a scalable app icon.
-- Update the manifest name, theme colors, categories, and icon files for your project.
-- Service workers require HTTPS, except for `localhost` development.
+Run `database/schema.sql` in PostgreSQL or Supabase SQL Editor only when authentication is enabled.
 
-## Supabase
+## Tailwind CSS
 
-Use the exact pooled or direct PostgreSQL connection details shown by Supabase. Use `DB_SSLMODE=require` unless a stricter TLS/CA setup is configured.
-
-Never expose Supabase service-role credentials or database passwords to browser JavaScript.
-
-## Commands
+The project uses Tailwind CSS v4. Source styles live in `resources/css/input.css`; the public stylesheet is `public/assets/app.css`.
 
 ```sh
-php tests/smoke.php
 npm install
 npm run build:css
 npm run watch:css
-php -S 127.0.0.1:8000 -t public
 ```
+
+PHP does not require Node/npm at runtime.
+
+## Configuration
+
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `APP_NAME` | PHP Boilerplate | Application name |
+| `APP_ENV` | development | Runtime environment |
+| `APP_URL` | `http://127.0.0.1:8000` | Public origin |
+| `AUTH_ENABLED` | `false` | Enable local sessions and account routes |
+| `DB_DRIVER` | `none` | `none`, `postgres`, or `supabase` |
+| `DB_HOST` | empty | PostgreSQL host |
+| `DB_PORT` | `5432` | PostgreSQL port |
+| `DB_NAME` | `postgres` | PostgreSQL database |
+| `DB_USER` | empty | PostgreSQL user |
+| `DB_PASSWORD` | empty | PostgreSQL password |
+| `DB_SSLMODE` | `require` | `require`, `verify-ca`, or `verify-full` |
+
+Keep `.env` private. Never put database passwords or Supabase service-role credentials in browser code.
+
+## PWA and SEO
+
+- Update `public/manifest.webmanifest`, `public/icon.svg`, `public/robots.txt`, and `public/sitemap.xml` with production values.
+- Set `APP_URL` to the public origin.
+- PWA service workers require HTTPS except on `localhost`.
+- Public routes receive canonical and Open Graph metadata from `templates/layout.php`.
+
+## Tests
+
+```sh
+php tests/smoke.php
+```
+
+The smoke test validates PHP syntax, JSON files, XML documents, PWA assets, and optional `data/*.json` files.
 
 ## License
 

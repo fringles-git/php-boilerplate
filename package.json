@@ -2,10 +2,11 @@
   "name": "php-boilerplate-assets",
   "private": true,
   "scripts": {
-    "build:css": "tailwindcss -i ./resources/css/input.css -o ./public/assets/app.css --minify",
-    "watch:css": "tailwindcss -i ./resources/css/input.css -o ./public/assets/app.css --watch"
+    "build:css": "npx @tailwindcss/cli -i ./resources/css/input.css -o ./public/assets/app.css --minify",
+    "watch:css": "npx @tailwindcss/cli -i ./resources/css/input.css -o ./public/assets/app.css --watch"
   },
   "devDependencies": {
-    "tailwindcss": "3.4.17"
+    "@tailwindcss/cli": "^4.1.0",
+    "tailwindcss": "^4.1.0"
   }
 }

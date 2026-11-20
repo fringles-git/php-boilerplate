@@ -1,9 +1,11 @@
-# Runtime files
+# Local runtime configuration
 .env
 *.log
+
+# Frontend tooling
 node_modules/
 
-# OS/editor files
+# Editor and OS files
 .DS_Store
 Thumbs.db
 .vscode/

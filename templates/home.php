@@ -1,15 +1,10 @@
-<section class="intro">
-    <p class="eyebrow">A minimal foundation</p>
-    <h1>Build your next PHP app with confidence.</h1>
-    <p>PHP 8.5.12, Supabase PostgreSQL, secure defaults — without a framework, Composer, or Docker.</p>
-    <?php if ($user === null): ?>
-        <p><a class="button" href="<?= esc(url('/register')) ?>">Create an account</a></p>
-    <?php else: ?>
-        <p><a class="button" href="<?= esc(url('/profile')) ?>">View your profile</a></p>
-    <?php endif; ?>
-</section>
-<section class="features">
-    <article><h2>Modern PHP</h2><p>Strict types, small focused classes, and a lightweight front controller.</p></article>
-    <article><h2>Supabase Postgres</h2><p>PDO prepared statements, TLS, and SQL schema for Supabase SQL Editor.</p></article>
-    <article><h2>Secure basics</h2><p>CSRF protection, escaped output, secure sessions, and password hashing.</p></article>
+<section class="card">
+  <p class="eyebrow">PHP 8.5.12 starter</p>
+  <h1>Build a focused web application.</h1>
+  <p>Server-rendered PHP, optional Supabase/PostgreSQL authentication, Tailwind CSS, SEO, and PWA support.</p>
+  <div class="feature-grid">
+    <article><h2>Minimal core</h2><p>No framework, Composer, or Docker dependency.</p></article>
+    <article><h2>Optional database</h2><p>Disable authentication and database access completely, or enable PostgreSQL/PDO.</p></article>
+    <article><h2>Real starter files</h2><p>Routing, templates, PWA assets, SEO metadata, and smoke checks are ready to adapt.</p></article>
+  </div>
 </section>

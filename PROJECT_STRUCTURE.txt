@@ -1,9 +1,22 @@
 php-boilerplate/
-├── public/              # Web document root
-├── src/                 # Application classes
-├── templates/           # Server-rendered pages
-├── assets/              # Static assets
-├── database/schema.sql  # Database schema
-├── config/app.php       # Environment loading and configuration
+├── public/
+│   ├── index.php         Front controller
+│   ├── assets/app.css    Built Tailwind stylesheet
+│   ├── manifest.webmanifest
+│   ├── service-worker.js
+│   ├── robots.txt
+│   ├── sitemap.xml
+│   └── icon.svg
+├── config/app.php        Environment loader
+├── src/
+│   ├── Auth.php          Optional session authentication
+│   ├── Database.php      Optional PostgreSQL/Supabase PDO
+│   ├── UserRepository.php
+│   └── Support.php       Rendering, escaping, CSRF, flash messages
+├── templates/            Layout and route views
+├── database/schema.sql   Optional account schema
+├── resources/css/        Tailwind v4 source
+├── tests/smoke.php       Real repository smoke checks
 ├── .env.example
-└── tests/smoke.php
+├── package.json
+└── README.md

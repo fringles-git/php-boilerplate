@@ -1,55 +1,67 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title><?= esc($title ?? $appName) ?></title>
+  <meta name="description" content="<?= esc($description ?? 'A reusable PHP 8.5.12 starter for modern, server-rendered applications.') ?>">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#2558a6">
+  <link rel="canonical" href="<?= esc($canonical ?? url('/')) ?>">
+  <link rel="manifest" href="<?= esc(url('/manifest.webmanifest')) ?>">
+  <link rel="icon" href="<?= esc(url('/icon.svg')) ?>" type="image/svg+xml">
+  <link rel="stylesheet" href="<?= esc(url('/assets/app.css')) ?>">
 
-    <title>PHP Boilerplate - PHP 8.5 and Supabase Starter</title>
-    <meta name="description" content="A secure, reusable PHP 8.5.12 starter with Supabase PostgreSQL, Tailwind CSS, SEO, and PWA support.">
-    <meta name="robots" content="index, follow">
-    <meta name="theme-color" content="#2558a6">
-    <meta name="color-scheme" content="light">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="<?= esc($appName) ?>">
+  <meta property="og:title" content="<?= esc($title ?? $appName) ?>">
+  <meta property="og:description" content="<?= esc($description ?? 'A reusable PHP 8.5.12 starter.') ?>">
+  <meta property="og:url" content="<?= esc($canonical ?? url('/')) ?>">
+  <meta property="og:image" content="<?= esc(url('/icon.svg')) ?>">
 
-    <link rel="canonical" href="<?= esc($canonical ?? 'https://example.com/') ?>">
-    <link rel="manifest" href="/manifest.webmanifest">
-    <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="/assets/app.css">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="<?= esc($title ?? $appName) ?>">
+  <meta name="twitter:description" content="<?= esc($description ?? 'A reusable PHP 8.5.12 starter.') ?>">
+  <meta name="twitter:image" content="<?= esc(url('/icon.svg')) ?>">
 
-    <meta property="og:type" content="website">
-    <meta property="og:locale" content="en_US">
-    <meta property="og:site_name" content="PHP Boilerplate">
-    <meta property="og:title" content="PHP Boilerplate">
-    <meta property="og:description" content="A secure PHP 8.5.12 starter for Supabase PostgreSQL.">
-    <meta property="og:url" content="<?= esc($canonical ?? 'https://example.com/') ?>">
-    <meta property="og:image" content="/icon.svg">
-
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="PHP Boilerplate">
-    <meta name="twitter:description" content="A secure PHP 8.5.12 starter for Supabase PostgreSQL.">
-    <meta name="twitter:image" content="/icon.svg">
-
-    <script type="application/ld+json">
-    <?= json_encode([
-        '@context' => 'https://schema.org',
-        '@type' => 'SoftwareApplication',
-        'name' => 'PHP Boilerplate',
-        'applicationCategory' => 'DeveloperApplication',
-        'operatingSystem' => 'Web',
-        'description' => 'A secure PHP 8.5.12 starter with Supabase PostgreSQL and Tailwind CSS.',
-    ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>
-    </script>
+  <script type="application/ld+json"><?= json_encode([
+    '@context' => 'https://schema.org',
+    '@type' => 'SoftwareApplication',
+    'name' => $appName,
+    'applicationCategory' => 'DeveloperApplication',
+    'operatingSystem' => 'Web',
+  ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?></script>
 </head>
 <body>
-    <main>
-        <h1>PHP Boilerplate</h1>
-        <p>PHP 8.5.12, Supabase PostgreSQL, Tailwind CSS, SEO, and PWA support.</p>
-    </main>
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service-worker.js').catch(() => {});
-            });
-        }
-    </script>
+  <header>
+    <nav class="shell" aria-label="Main navigation">
+      <a class="brand" href="<?= esc(url('/')) ?>"><?= esc($appName) ?></a>
+      <?php if ($authEnabled): ?>
+        <?php if ($user !== null): ?>
+          <a href="<?= esc(url('/profile')) ?>">Profile</a>
+          <form method="post" action="<?= esc(url('/logout')) ?>">
+            <input type="hidden" name="csrf_token" value="<?= esc(csrf_token()) ?>">
+            <button type="submit">Log out</button>
+          </form>
+        <?php else: ?>
+          <a href="<?= esc(url('/login')) ?>">Log in</a>
+          <a href="<?= esc(url('/register')) ?>">Register</a>
+        <?php endif; ?>
+      <?php endif; ?>
+    </nav>
+  </header>
+
+  <main class="shell">
+    <?php foreach (flash_all() as $message): ?>
+      <div class="alert <?= $message['type'] === 'error' ? 'alert-error' : '' ?>" role="status"><?= esc($message['text']) ?></div>
+    <?php endforeach; ?>
+    <?php require $view; ?>
+  </main>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('<?= esc(url('/service-worker.js')) ?>').catch(() => {}));
+    }
+  </script>
 </body>
 </html>
