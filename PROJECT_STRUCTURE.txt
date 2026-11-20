@@ -1,0 +1,9 @@
+php-boilerplate/
+├── public/              # Web document root
+├── src/                 # Application classes
+├── templates/           # Server-rendered pages
+├── assets/              # Static assets
+├── database/schema.sql  # Database schema
+├── config/app.php       # Environment loading and configuration
+├── .env.example
+└── tests/smoke.php

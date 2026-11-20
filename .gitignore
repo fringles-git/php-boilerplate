@@ -1,0 +1,15 @@
+<?php
+
+# Local runtime files
+.env
+*.log
+
+# Cache and temporary files
+.cache/
+tmp/
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
