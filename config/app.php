@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-require_once dirname(__DIR__) . '/config/app.php';
-
-/** Load a small .env file without external dependencies. Process env takes precedence. */
+/** Lightweight environment loader. Process environment values take precedence. */
 $envFile = dirname(__DIR__) . '/.env';
 if (is_file($envFile) && is_readable($envFile)) {
     foreach (file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [] as $line) {
@@ -33,6 +31,5 @@ function config(string $key, string $default = ''): string
 
 function config_flag(string $key, bool $default = false): bool
 {
-    $value = strtolower(trim(config($key, $default ? 'true' : 'false')));
-    return in_array($value, ['1', 'true', 'yes', 'on'], true);
+    return filter_var(config($key, $default ? 'true' : 'false'), FILTER_VALIDATE_BOOLEAN);
 }

@@ -16,7 +16,6 @@ final class Database
         if (self::$pdo instanceof PDO) {
             return self::$pdo;
         }
-
         $driver = strtolower(trim(\config('DB_DRIVER', 'none')));
         if (!in_array($driver, ['postgres', 'supabase'], true)) {
             throw new PDOException('Database access is disabled or DB_DRIVER is invalid.');
@@ -29,7 +28,6 @@ final class Database
         if (!extension_loaded('pdo_pgsql')) {
             throw new PDOException('The PDO PostgreSQL extension (pdo_pgsql) is required.');
         }
-
         $host = \config('DB_HOST');
         $port = \config('DB_PORT', '5432');
         $database = \config('DB_NAME', 'postgres');
@@ -40,13 +38,24 @@ final class Database
         if (!in_array($sslmode, ['require', 'verify-ca', 'verify-full'], true)) {
             throw new PDOException('DB_SSLMODE must be require, verify-ca, or verify-full.');
         }
-
         $dsn = sprintf('pgsql:host=%s;port=%s;dbname=%s;sslmode=%s', $host, $port, $database, $sslmode);
-        self::$pdo = new PDO($dsn, \config('DB_USER'), \config('DB_PASSWORD'), [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES => false,
-        ]);
+        self::$pdo = new PDO($dsn, \config('DB_USER'), \config('DB_PASSWORD'), [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC, PDO::ATTR_EMULATE_PREPARES => false]);
         return self::$pdo;
+    }
+
+    public static function transaction(callable $work): mixed
+    {
+        $pdo = self::connection();
+        $pdo->beginTransaction();
+        try {
+            $result = $work($pdo);
+            $pdo->commit();
+            return $result;
+        } catch (\Throwable $exception) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+            throw $exception;
+        }
     }
 }

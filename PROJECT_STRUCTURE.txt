@@ -1,25 +1,19 @@
 php-boilerplate/
-├── public/
-│   ├── index.php                 # Bootstrap, route registration, and dispatch
-│   ├── assets/app.css            # Compiled Tailwind CSS
-│   ├── manifest.webmanifest      # PWA installation metadata
-│   ├── service-worker.js         # Public-assets/public-pages cache
-│   ├── robots.txt                # Static fallback
-│   ├── sitemap.xml               # Static fallback
-│   ├── llms.txt                  # AI discovery summary
-│   ├── icon.svg                  # PWA icon source
-│   └── .well-known/agent.json    # Agent discovery metadata
-├── config/app.php                # Environment and feature flags
+├── public/index.php              # Single front controller and route registration
+├── bin/console                   # Lightweight CLI commands
+├── config/app.php                # Dependency-free .env loader
 ├── src/
-│   ├── Router.php                # Small exact-route dispatcher
-│   ├── Support.php               # Escaping, CSRF, flash, URL, render helpers
-│   ├── Database.php              # Optional PostgreSQL/Supabase PDO connection
-│   ├── Auth.php                  # Optional session authentication
-│   └── UserRepository.php        # Optional PostgreSQL account repository
-├── templates/                    # Layout and route views
-├── database/schema.sql           # Optional account schema
-├── resources/css/input.css       # Tailwind CSS 4 source
-├── tests/smoke.php               # PHP syntax and integration smoke checks
-├── .env.example
-├── package.json
+│   ├── bootstrap.php             # Autoloader, session, headers, exception handling
+│   ├── Http/                     # Request and Response
+│   ├── Controllers/              # Home, Auth, Profile
+│   ├── Models/User.php           # Typed entity
+│   ├── Support/                  # Logger, pagination, text and date helpers
+│   ├── Database.php              # PDO wrapper and transaction helper
+│   ├── Router.php                # Exact-route dispatcher
+│   ├── Validator.php             # Structured field errors
+│   ├── Auth.php
+│   └── UserRepository.php
+├── templates/                    # Views and layout
+├── database/schema.sql           # PostgreSQL schema
+├── tests/smoke.php
 └── README.md

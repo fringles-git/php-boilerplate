@@ -1,0 +1,25 @@
+<?php
+
+require dirname(__DIR__) . '/config/app.php';
+require dirname(__DIR__) . '/src/bootstrap.php';
+
+use App\Database;
+use App\Support\Logger;
+
+$command = $argv[1] ?? 'help';
+if ($command === 'health') {
+    try {
+        if (config_flag('AUTH_ENABLED', false)) {
+            Database::connection()->query('SELECT 1');
+        }
+        echo "Application: OK\n";
+        exit(0);
+    } catch (Throwable $exception) {
+        Logger::error('CLI health check failed', ['exception' => $exception::class, 'message' => $exception->getMessage()]);
+        fwrite(STDERR, "Application: FAILED (details are in the application log)\n");
+        exit(1);
+    }
+}
+
+fwrite(STDOUT, "Usage: php bin/console <command>\n\nCommands:\n  health  Check application and optional database connectivity\n");
+exit($command === 'help' ? 0 : 2);

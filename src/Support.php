@@ -17,20 +17,14 @@ function csrf_token(): string
 
 function csrf_validate(mixed $token): bool
 {
-    return is_string($token)
-        && isset($_SESSION['csrf_token'])
-        && hash_equals($_SESSION['csrf_token'], $token);
+    return is_string($token) && isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token);
 }
 
 function verify_csrf(): void
 {
     if (!csrf_validate($_POST['csrf_token'] ?? null)) {
         http_response_code(403);
-        render('error', [
-            'errors' => ['Your form session expired. Please try again.'],
-            'authEnabled' => config_flag('AUTH_ENABLED', false),
-            'user' => null,
-        ]);
+        echo render('error', ['errors' => ['Your form session expired. Please try again.'], 'authEnabled' => config_flag('AUTH_ENABLED', false), 'user' => null]);
         exit;
     }
 }
@@ -47,20 +41,47 @@ function flash_all(): array
     return $messages;
 }
 
+function take_validation_errors(): array
+{
+    $errors = $_SESSION['_validation_errors'] ?? [];
+    unset($_SESSION['_validation_errors']);
+    return is_array($errors) ? $errors : [];
+}
+
+function take_old_input(): array
+{
+    $old = $_SESSION['_old_input'] ?? [];
+    unset($_SESSION['_old_input']);
+    return is_array($old) ? $old : [];
+}
+
 function url(string $path = '/'): string
 {
     $base = rtrim(config('APP_URL', 'http://127.0.0.1:8000'), '/');
     return $base . '/' . ltrim($path, '/');
 }
 
+/** Redirect to a local application path only; absolute URLs and protocol-relative paths are rejected. */
+function safe_redirect_path(string $target, string $fallback = '/'): string
+{
+    if ($target === '' || $target[0] !== '/' || str_starts_with($target, '//') || str_contains($target, "\\") || preg_match('/[\r\n]/', $target)) {
+        return $fallback;
+    }
+    $parts = parse_url($target);
+    return $parts === false || isset($parts['scheme']) || isset($parts['host']) ? $fallback : $target;
+}
+
 function redirect(string $path): never
 {
-    header('Location: ' . url($path), true, 303);
+    header('Location: ' . url(safe_redirect_path($path)), true, 303);
     exit;
 }
 
-function render(string $template, array $data = []): void
+function render(string $template, array $data = []): string
 {
+    if (!preg_match('/\A[a-zA-Z0-9_-]+\z/', $template)) {
+        throw new RuntimeException('Invalid template name.');
+    }
     extract($data, EXTR_SKIP);
     $appName = config('APP_NAME', 'PHP Boilerplate');
     $title = $title ?? $appName;
@@ -71,10 +92,12 @@ function render(string $template, array $data = []): void
     $view = $templatePath;
     $authEnabled = $authEnabled ?? config_flag('AUTH_ENABLED', false);
     $user = $user ?? null;
+    ob_start();
     require dirname(__DIR__) . '/templates/layout.php';
+    return (string) ob_get_clean();
 }
 
-function require_login(?array $user): void
+function require_login(?\App\Models\User $user): void
 {
     if ($user === null) {
         flash('Please log in to continue.', 'error');

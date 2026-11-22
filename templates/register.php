@@ -1,3 +1,8 @@
+<?php
+
+$errors = $errors ?? [];
+$old = $old ?? [];
+?>
 <section class="card">
   <h1>Create account</h1>
   <?php if ($errors !== []): ?><ul class="errors"><?php foreach ($errors as $error): ?><li><?= esc($error) ?></li><?php endforeach; ?></ul><?php endif; ?>

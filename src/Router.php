@@ -4,45 +4,33 @@ declare(strict_types=1);
 
 namespace App;
 
+use App\Http\Request;
+use App\Http\Response;
+
 final class Router
 {
+    /** @var array<string, array<string, callable(Request): Response>> */
     private array $routes = [];
-
-    public function __construct(private readonly string $method, private readonly string $path)
-    {
-    }
 
     public function get(string $path, callable $handler): void
     {
-        $this->add('GET', $path, $handler);
+        $this->routes['GET'][$path] = $handler;
     }
 
     public function post(string $path, callable $handler): void
     {
-        $this->add('POST', $path, $handler);
+        $this->routes['POST'][$path] = $handler;
     }
 
-    private function add(string $method, string $path, callable $handler): void
+    public function dispatch(Request $request): Response
     {
-        $this->routes[$method][$path] = $handler;
-    }
-
-    public function dispatch(): never
-    {
-        $normalized = '/' . trim($this->path, '/');
-        if ($normalized === '//') {
-            $normalized = '/';
+        $path = '/' . trim($request->path, '/');
+        if ($path === '//') {
+            $path = '/';
         }
-        $handler = $this->routes[$this->method][$normalized] ?? null;
-        if ($handler !== null) {
-            $handler();
-            exit;
-        }
-        http_response_code(404);
-        render('404', [
-            'authEnabled' => config_flag('AUTH_ENABLED', false),
-            'user' => null,
-        ]);
-        exit;
+        $handler = $this->routes[$request->method][$path] ?? null;
+        return $handler === null
+            ? Response::html(render('404', ['authEnabled' => config_flag('AUTH_ENABLED', false), 'user' => null]), 404)
+            : $handler($request);
     }
 }
