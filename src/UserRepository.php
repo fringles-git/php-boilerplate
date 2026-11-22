@@ -9,14 +9,12 @@ use PDO;
 
 final class UserRepository
 {
-    public function __construct(private readonly PDO $pdo)
-    {
-    }
+    public function __construct(private readonly PDO $pdo) {}
 
     public function create(string $name, string $username, string $email, string $password): User
     {
         $statement = $this->pdo->prepare('INSERT INTO public.users (name, username, email, password_hash) VALUES (:name, :username, :email, :password_hash) RETURNING id, name, username, email, role');
-        $statement->execute(['name' => $name, 'username' => $username, 'email' => $email, 'password_hash' => password_hash($password, PASSWORD_DEFAULT)]);
+        $statement->execute(['name' => $name, 'username' => $username, 'email' => $email, 'password_hash' => Password::hash($password)]);
         return User::fromRow($statement->fetch() ?: throw new \RuntimeException('User insert returned no row.'));
     }
 
@@ -53,5 +51,25 @@ final class UserRepository
     {
         $statement = $this->pdo->prepare('DELETE FROM public.users WHERE id = :id');
         $statement->execute(['id' => $id]);
+    }
+
+    public function createRememberToken(int $userId, string $selector, string $verifierHash, int $expiresAt): void
+    {
+        $statement = $this->pdo->prepare('INSERT INTO public.remember_tokens (user_id, selector, verifier_hash, expires_at) VALUES (:user_id, :selector, :verifier_hash, TO_TIMESTAMP(:expires_at)) ON CONFLICT (selector) DO UPDATE SET verifier_hash = EXCLUDED.verifier_hash, expires_at = EXCLUDED.expires_at');
+        $statement->execute(['user_id' => $userId, 'selector' => $selector, 'verifier_hash' => $verifierHash, 'expires_at' => $expiresAt]);
+    }
+
+    public function findRememberToken(string $selector): ?array
+    {
+        $statement = $this->pdo->prepare('SELECT user_id, verifier_hash, EXTRACT(EPOCH FROM expires_at)::BIGINT AS expires_at FROM public.remember_tokens WHERE selector = :selector');
+        $statement->execute(['selector' => $selector]);
+        $row = $statement->fetch();
+        return $row === false ? null : $row;
+    }
+
+    public function deleteRememberToken(string $selector): void
+    {
+        $statement = $this->pdo->prepare('DELETE FROM public.remember_tokens WHERE selector = :selector');
+        $statement->execute(['selector' => $selector]);
     }
 }

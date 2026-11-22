@@ -11,10 +11,18 @@ CREATE TABLE IF NOT EXISTS public.users (
 
 ALTER TABLE public.users ADD COLUMN IF NOT EXISTS role VARCHAR(20) NOT NULL DEFAULT 'user';
 
+CREATE TABLE IF NOT EXISTS public.remember_tokens (
+    user_id BIGINT NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+    selector VARCHAR(24) PRIMARY KEY,
+    verifier_hash VARCHAR(64) NOT NULL,
+    expires_at TIMESTAMPTZ NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS remember_tokens_user_id_idx ON public.remember_tokens(user_id);
+
 CREATE OR REPLACE FUNCTION public.set_updated_at()
-RETURNS TRIGGER
-LANGUAGE plpgsql
-AS $$
+RETURNS TRIGGER LANGUAGE plpgsql AS $$
 BEGIN
     NEW.updated_at = CURRENT_TIMESTAMP;
     RETURN NEW;
@@ -22,6 +30,5 @@ END;
 $$;
 
 DROP TRIGGER IF EXISTS users_set_updated_at ON public.users;
-CREATE TRIGGER users_set_updated_at
-BEFORE UPDATE ON public.users
+CREATE TRIGGER users_set_updated_at BEFORE UPDATE ON public.users
 FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
